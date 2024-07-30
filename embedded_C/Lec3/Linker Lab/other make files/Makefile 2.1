@@ -1,0 +1,26 @@
+#Created by Ahmed Emad
+CC=arm-none-eabi-
+CFLAGS=-mcpu=arm926ej-s -g
+INCS=-I .
+LIBS=
+ProjectName=learn-in-depth
+
+$(ProjectName).bin: $(ProjectName).elf
+	$(CC)objcopy.exe -O binary $(ProjectName).elf $(ProjectName).bin
+
+app.o: app.c
+	$(CC)gcc.exe -c -I . $(CFLAGS) app.c -o app.o
+	
+uart.o: uart.c
+	$(CC)gcc.exe -c -I . $(CFLAGS) uart.c -o uart.o
+	
+startup.o: startup.s
+	$(CC)as.exe $(CFLAGS) startup.s -o startup.o
+	
+$(ProjectName).elf: app.o uart.o startup.o linker_script.ld
+	$(CC)ld.exe -T linker_script.ld startup.o app.o uart.o -o $(ProjectName).elf
+
+clean_all:
+	rm *.o *.elf *.bin
+clean:
+	rm *.bin *.elf

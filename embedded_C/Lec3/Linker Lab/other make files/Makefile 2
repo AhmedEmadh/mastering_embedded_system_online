@@ -1,0 +1,21 @@
+#Created by Ahmed Emad
+
+learn-in-depth.bin: learn-in-depth.elf
+	arm-none-eabi-objcopy.exe -O binary learn-in-depth.elf learn-in-depth.bin
+
+app.o: app.c
+	arm-none-eabi-gcc.exe -c -I . -g -mcpu=arm926ej-s app.c -o app.o
+	
+uart.o: uart.c
+	arm-none-eabi-gcc.exe -c -I . -g -mcpu=arm926ej-s uart.c -o uart.o
+	
+startup.o: startup.s
+	arm-none-eabi-as.exe -mcpu=arm926ej-s -g startup.s -o startup.o
+	
+learn-in-depth.elf: app.o uart.o startup.o linker_script.ld
+	arm-none-eabi-ld.exe -T linker_script.ld startup.o app.o uart.o -o learn-in-depth.elf
+
+clean_all:
+	rm *.o *.elf *.bin
+clean:
+	rm *.bin *.elf
