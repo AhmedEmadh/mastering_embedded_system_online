@@ -65,10 +65,13 @@ add_student_error_state_t add_student_file()
     {
         sscanf(buffer,"%d %s %s %f %d %d %d %d %d",&student.roll,student.fname,student.lname,&student.GPA,&student.cid[0],&student.cid[1],&student.cid[2],&student.cid[3],&student.cid[4]);
         if(!isStudentExist(&database, &student))
+        {
             QUEUE_enqueue(&database, student);
+            printff("[INFO] Student with roll number %d added successfully\n",student.roll);
+        }
         else 
         {
-            printff("[WARNING] Couldn't add the student with roll number: %d\n",student.roll);
+            printff("[ERROR] Couldn't add the student with roll number: %d\n",student.roll);
             //LocaladdStudentErrorState = add_student_error_state_Student_Found;
         }
     }   
@@ -81,10 +84,10 @@ void Add_students_From_File()
     add_student_error_state_t local_error_state = add_student_error_state_no_Error;
     local_error_state = add_student_file();
     if(local_error_state == add_student_error_state_no_Error)
-        printff("\n\n[INFO] The Students added Successfully\n\n");
+        printff("\n\n[INFO] The Students updated successfully\n\n");
     else 
     {
-        printff("[ERROR] The Studends didn't added successfully\n");
+        printff("\n[ERROR] The Studends didn't added successfully\n");
     }
 }
 void add_student_manually()
@@ -223,24 +226,65 @@ void FindTheTotalNumberOfStudents()
 
 void UpdateStudent(Student_t* PStudent)
 {
-    printff("Updating Student\n");
-    printff("Enter First Name: ");
-    scanff("%s",PStudent->fname);
-    printff("Enter Last Name: ");
-    scanff("%s",PStudent->lname);
-    printff("Enter GPA: ");
-    scanff("%f",&PStudent->GPA);
-    printff("Enter Student Course 1 ID: ");
-    scanff("%d",&PStudent->cid[0]);
-    printff("Enter Student Course 2 ID: ");
-    scanff("%d",&PStudent->cid[1]);
-    printff("Enter Student Course 3 ID: ");
-    scanff("%d",&PStudent->cid[2]);
-    printff("Enter Student Course 4 ID: ");
-    scanff("%d",&PStudent->cid[3]);
-    printff("Enter Student Course 5 ID: ");
-    scanff("%d",&PStudent->cid[4]);
-    
+    enum Choice
+    {
+        Choice_FirstName = 1,
+        Choice_LastName = 2,
+        Choice_RollNo = 3,
+        Choice_GPA = 4,
+        Choice_Courses = 5
+    } LocalChoice;
+    printff("1. first name\n");
+    printff("2. last name\n");
+    printff("3. roll no.\n");
+    printff("4. GPA\n");
+    printff("5. courses\n");
+    LocalChoice = (enum Choice)INPUT_VALIDATE_IntInputBetween((int)Choice_FirstName, (int)Choice_Courses);
+    switch(LocalChoice)
+    {
+        case Choice_FirstName:
+        {            
+            printff("Enter First Name: ");
+            scanff("%s",PStudent->fname);
+            break;
+        }
+        case Choice_LastName:
+        {
+
+            printff("Enter Last Name: ");
+            scanff("%s",PStudent->lname);
+            break;
+        }
+        case Choice_RollNo:
+        {
+            printff("Enter roll no.: ");
+            scanff("%d",&PStudent->roll);
+            break;
+        }
+        case Choice_GPA:
+        {
+
+            printff("Enter GPA: ");
+            scanff("%f",&PStudent->GPA);
+            break;
+        }
+        case Choice_Courses:
+        {
+
+            printff("Enter Student Course 1 ID: ");
+            scanff("%d",&PStudent->cid[0]);
+            printff("Enter Student Course 2 ID: ");
+            scanff("%d",&PStudent->cid[1]);
+            printff("Enter Student Course 3 ID: ");
+            scanff("%d",&PStudent->cid[2]);
+            printff("Enter Student Course 4 ID: ");
+            scanff("%d",&PStudent->cid[3]);
+            printff("Enter Student Course 5 ID: ");
+            scanff("%d",&PStudent->cid[4]);
+            break;
+        }
+    }
+    printff("[INFO] Updated Successfully\n");
 }
 
 void UpdateStudentByRoll()
